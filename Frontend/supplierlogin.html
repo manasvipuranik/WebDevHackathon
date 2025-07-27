@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Login | VendorConnect</title>
+  <!-- Assuming mainstyles.css is a shared stylesheet, otherwise embed styles directly -->
+  <link rel="stylesheet" href="mainstyles.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff0e6, #f0e6ff);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0; /* Ensure no default body margin */
+    }
+    
+    .auth-container {
+      background: #ffffff;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 450px;
+      width: 100%;
+      box-sizing: border-box; /* Include padding in width calculation */
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      background: linear-gradient(90deg, #ff5e57, #ff9f43);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-header p {
+        color: #555;
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .toggle-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      margin: 0 5px;
+      cursor: pointer;
+      background: #f0f0f0;
+      transition: 0.3s;
+    }
+
+    .toggle-buttons button.active {
+      background: linear-gradient(to right, #ff5e57, #ff9f43);
+      color: white;
+    }
+
+    .auth-form {
+      display: none;
+      flex-direction: column;
+    }
+
+    .auth-form.active {
+      display: flex;
+    }
+
+    .auth-form input {
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      box-sizing: border-box; /* Include padding in width calculation */
+    }
+
+    .auth-form button {
+      background: linear-gradient(to right, #38ef7d, #11998e);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: filter 0.3s ease;
+    }
+
+    .auth-form button:hover {
+      filter: brightness(1.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .auth-container {
+            margin: 20px;
+            padding: 30px 20px;
+        }
+        .auth-header h2 {
+            font-size: 1.8rem;
+        }
+        .toggle-buttons button {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        .auth-form input {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+        .auth-form button {
+            padding: 10px;
+            font-size: 1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <h2>VendorConnect</h2>
+      <p>Login or Register as a Supplier</p>
+    </div>
+
+    <div class="toggle-buttons">
+      <button id="show-login" class="active">Sign In</button>
+      <button id="show-register">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="login-form" class="auth-form active" onsubmit="event.preventDefault(); window.location.href='supplierhome.html';">
+      <input type="text" placeholder="Username" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Registration Form -->
+    <form id="register-form" class="auth-form" onsubmit="event.preventDefault(); window.location.href='supplierhome.html';">
+      <input type="text" placeholder="Company Name" required />
+      <input type="tel" placeholder="Contact Phone Number" required />
+      <input type="text" placeholder="Product Category (e.g., Grains, Dairy...)" required />
+      <input type="text" placeholder="Service Area / Location" required />
+      <input type="text" placeholder="Username" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <script>
+    const showLoginBtn = document.getElementById('show-login');
+    const showRegisterBtn = document.getElementById('show-register');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    // Display login form by default and activate its button
+    loginForm.classList.add('active');
+    showLoginBtn.classList.add('active');
+
+    showLoginBtn.onclick = () => {
+      loginForm.classList.add('active');
+      registerForm.classList.remove('active');
+      showLoginBtn.classList.add('active');
+      showRegisterBtn.classList.remove('active');
+    };
+
+    showRegisterBtn.onclick = () => {
+      loginForm.classList.remove('active');
+      registerForm.classList.add('active');
+      showLoginBtn.classList.remove('active');
+      showRegisterBtn.classList.add('active');
+    };
+  </script>
+</body>
+</html>
