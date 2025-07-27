@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VendorConnect - Supplier Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #d4b5a0 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6b35;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🥤";
+            font-size: 1.5rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #ff6b35;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .stat-label {
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .filters {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .orders-section {
+            background: 5#e9dff8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .refresh-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: rgb(249, 249, 249);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .order-card {
+            background: #eddbe6;
+            border: 1px solid #ddd;
+            border-left: 4px solid #e67e22;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-id {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .order-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d1ecf1; color: #0c5460; }
+        .status-preparing { background: #d4edda; color: #155724; }
+        .status-shipped { background: #cce5ff; color: #004085; }
+        .status-delivered { background: #d5f4e6; color: #27ae60; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .vendor-info {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(247, 147, 30, 0.1));
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .vendor-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-items {
+            margin-bottom: 1rem;
+        }
+
+        .items-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding-top: 1rem;
+            border-top: 2px solid #ff6b35;
+        }
+
+        .total-amount {
+            color: #ff6b35;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm { 
+            background: linear-gradient(135deg, #28a745, #20c997); 
+            color: white; 
+        }
+        .btn-reject { 
+            background: linear-gradient(135deg, #dc3545, #c82333); 
+            color: white; 
+        }
+        .btn-ship { 
+            background: linear-gradient(135deg, #007bff, #0056b3); 
+            color: white; 
+        }
+        .btn-complete { 
+            background: linear-gradient(135deg, #6f42c1, #563d7c); 
+            color: white; 
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.success { background: #28a745; }
+        .notification.error { background: #dc3545; }
+        .notification.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .order-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">VendorConnect</div>
+        <div class="user-info">
+            <span>Welcome, Supplier!</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="title">Supplier Dashboard</h1>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">6</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingOrders">1</div>
+                <div class="stat-label">Pending Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">₹13,455</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgRating">4.8</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">Search Orders</label>
+                <input type="text" class="filter-input" id="searchInput" placeholder="Search by order ID, vendor name..." onkeyup="filterOrders()">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select class="filter-select" id="statusFilter" onchange="filterOrders()">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Sort By</label>
+                <select class="filter-select" id="sortFilter" onchange="filterOrders()">
+                    <option value="date_desc">Newest First</option>
+                    <option value="date_asc">Oldest First</option>
+                    <option value="amount_desc">Highest Amount</option>
+                    <option value="amount_asc">Lowest Amount</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="orders-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Orders</h2>
+                <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+            </div>
+            <div id="ordersGrid">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Sample order data
+        let allOrders = [
+            {
+                id: 'ORD-2024-001',
+                vendorName: 'Fresh Veggie Mart',
+                vendorPhone: '+91 9876543210',
+                orderDate: '2024-01-15T10:30:00Z',
+                status: 'pending',
+                items: [
+                    { name: 'Fresh Onions (Chopped)', quantity: '10kg', price: 350 },
+                    { name: 'Pav Bread (Mumbai Style)', quantity: '20 dozen', price: 480 },
+                    { name: 'Masala Spice Mix', quantity: '2kg', price: 560 }
+                ],
+                totalAmount: 1390,
+                deliveryAddress: 'Sadar Bazaar'
+            },
+            {
+                id: 'ORD-2024-002',
+                vendorName: 'Spice Kingdom',
+                vendorPhone: '+91 9876543211',
+                orderDate: '2024-01-15T14:20:00Z',
+                status: 'confirmed',
+                items: [
+                    { name: 'Fresh Tomatoes', quantity: '15kg', price: 375 },
+                    { name: 'Cooking Oil (Refined)', quantity: '20L', price: 2400 },
+                    { name: 'Paper Plates & Cups', quantity: '1000 pieces', price: 850 }
+                ],
+                totalAmount: 3625,
+                deliveryAddress: 'Civil Lines'
+            },
+            {
+                id: 'ORD-2024-003',
+                vendorName: 'Grain Master Co.',
+                vendorPhone: '+91 9876543212',
+                orderDate: '2024-01-14T09:15:00Z',
+                status: 'shipped',
+                items: [
+                    { name: 'Fresh Burger Patties', quantity: '5kg', price: 2250 },
+                    { name: 'Chicken Pieces (Boneless)', quantity: '3kg', price: 660 }
+                ],
+                totalAmount: 2910,
+                deliveryAddress: 'Itwari'
+            }
+        ];
+
+        let filteredOrders = [...allOrders];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+
+        // Load and display orders
+        function loadOrders() {
+            const ordersGrid = document.getElementById('ordersGrid');
+            
+            if (filteredOrders.length === 0) {
+                ordersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>📦 No orders found</h3>
+                        <p>Orders matching your filters will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersGrid.innerHTML = filteredOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">${order.id}</div>
+                            <div class="order-date">${formatDate(order.orderDate)}</div>
+                        </div>
+                        <div class="order-status status-${order.status}">${order.status}</div>
+                    </div>
+
+                    <div class="vendor-info">
+                        <div class="vendor-name">${order.vendorName}</div>
+                        <div>📞 ${order.vendorPhone}</div>
+                        <div>📍 ${order.deliveryAddress}</div>
+                    </div>
+
+                    <div class="order-items">
+                        <div class="items-header">Order Items</div>
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <div>
+                                    <strong>${item.name}</strong><br>
+                                    <small>Qty: ${item.quantity}</small>
+                                </div>
+                                <div class="item-price">₹${item.price}</div>
+                            </div>
+                        `).join('')}
+                        
+                        <div class="order-total">
+                            <span>Total Amount:</span>
+                            <span class="total-amount">₹${order.totalAmount}</span>
+                        </div>
+                    </div>
+
+                    <div class="order-actions">
+                        ${getActionButtons(order)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get action buttons based on order status
+        function getActionButtons(order) {
+            switch(order.status) {
+                case 'pending':
+                    return `
+                        <button class="action-btn btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')">
+                            ✅ Confirm Order
+                        </button>
+                        <button class="action-btn btn-reject" onclick="updateOrderStatus('${order.id}', 'cancelled')">
+                            ❌ Reject Order
+                        </button>
+                    `;
+                case 'confirmed':
+                    return `
+                        <button class="action-btn btn-ship" onclick="updateOrderStatus('${order.id}', 'preparing')">
+                            🔄 Start Preparing
+                        </button>
+                    `;
+                case 'preparing':
+                    return `
+                        <button class="action-btn btn-ship" onclick="updateOrderStatus('${order.id}', 'shipped')">
+                            🚚 Mark as Shipped
+                        </button>
+                    `;
+                case 'shipped':
+                    return `
+                        <button class="action-btn btn-complete" onclick="updateOrderStatus('${order.id}', 'delivered')">
+                            ✅ Mark as Delivered
+                        </button>
+                    `;
+                default:
+                    return `<button class="action-btn" disabled>Order ${order.status}</button>`;
+            }
+        }
+
+        // Update order status
+        function updateOrderStatus(orderId, newStatus) {
+            const order = allOrders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                loadOrders();
+                showNotification(`Order ${orderId} status updated to ${newStatus}`, 'success');
+            }
+        }
+
+        // Filter orders
+        function filterOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            filteredOrders = allOrders.filter(order => {
+                const matchesSearch = order.id.toLowerCase().includes(searchTerm) || 
+                                    order.vendorName.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || order.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+
+            // Sort orders
+            switch(sortFilter) {
+                case 'date_asc':
+                    filteredOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+                    break;
+                case 'amount_desc':
+                    filteredOrders.sort((a, b) => b.totalAmount - a.totalAmount);
+                    break;
+                case 'amount_asc':
+                    filteredOrders.sort((a, b) => a.totalAmount - b.totalAmount);
+                    break;
+                default: // date_desc
+                    filteredOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+            }
+
+            loadOrders();
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
